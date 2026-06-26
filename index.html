@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Légendes des Mille Royaumes - jeu d'aventure 2D inspiré des contes orientaux">
+    <title>Légendes des Mille Royaumes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Conteneur principal du jeu -->
+    <div id="game-container">
+
+        <!-- Zone de jeu (canvas) -->
+        <div id="canvas-wrapper">
+            <canvas id="game-canvas" width="960" height="540"></canvas>
+
+            <!-- HUD (interface superposée au canvas) -->
+            <div id="hud">
+                <div class="hud-row hud-top">
+                    <div class="hud-block" id="hud-lives" title="Vies">❤️ <span id="hud-lives-value">5</span></div>
+                    <div class="hud-block" id="hud-energy" title="Énergie">🍎 <span id="hud-energy-value">100</span></div>
+                    <div class="hud-block" id="hud-coins" title="Pièces">🪙 <span id="hud-coins-value">0</span></div>
+                    <div class="hud-block" id="hud-score" title="Score">⭐ <span id="hud-score-value">0</span></div>
+                    <div class="hud-block" id="hud-timer" title="Chronomètre">⏱ <span id="hud-timer-value">0:00</span></div>
+                    <div class="hud-block" id="hud-level" title="Niveau">📍 <span id="hud-level-value">1</span></div>
+                    <div class="hud-block" id="hud-boss" title="Boss vaincus">👑 <span id="hud-boss-value">0</span></div>
+                </div>
+                <div class="hud-row hud-bottom">
+                    <div class="hud-keys" id="hud-keys">🔑 <span id="hud-keys-value">0</span></div>
+                </div>
+            </div>
+
+            <!-- Contrôles tactiles (mobile / tablette) -->
+            <div id="touch-controls">
+                <div class="touch-pad">
+                    <button class="touch-btn" id="btn-left">◀</button>
+                    <button class="touch-btn" id="btn-right">▶</button>
+                </div>
+                <div class="touch-actions">
+                    <button class="touch-btn action-jump" id="btn-jump">⤒</button>
+                    <button class="touch-btn action-attack" id="btn-attack">⚔</button>
+                    <button class="touch-btn action-run" id="btn-run">»</button>
+                </div>
+            </div>
+
+            <!-- Écran de démarrage -->
+            <div id="overlay-start" class="overlay">
+                <div class="overlay-content">
+                    <h1 class="game-title">Légendes des<br><span class="title-accent">Mille Royaumes</span></h1>
+                    <p class="game-subtitle">Une aventure inspirée des contes orientaux</p>
+                    <div class="controls-help">
+                        <div class="control-item"><kbd>←</kbd><kbd>→</kbd> Se déplacer</div>
+                        <div class="control-item"><kbd>↑</kbd> Sauter / Double saut</div>
+                        <div class="control-item"><kbd>Espace</kbd> Attaque au sabre</div>
+                        <div class="control-item"><kbd>Shift</kbd> Courir</div>
+                    </div>
+                    <button class="btn-primary" id="btn-start">Commencer l'aventure</button>
+                    <p class="hint">Astuce : sur mobile, utilisez les boutons tactiles.</p>
+                </div>
+            </div>
+
+            <!-- Écran Game Over -->
+            <div id="overlay-gameover" class="overlay hidden">
+                <div class="overlay-content">
+                    <h1 class="game-title gameover-title">Game Over</h1>
+                    <p class="game-subtitle">Le héros est tombé dans l'oubli...</p>
+                    <button class="btn-primary" id="btn-restart-gameover">Rejouer</button>
+                </div>
+            </div>
+
+            <!-- Écran Victoire -->
+            <div id="overlay-victory" class="overlay hidden">
+                <div class="overlay-content">
+                    <h1 class="game-title victory-title">🎉 Félicitations !</h1>
+                    <p class="game-subtitle">Vous avez trouvé le <strong>Trésor des Mille Royaumes</strong> !</p>
+                    <div class="victory-stats">
+                        <div class="stat-row">Score final : <span id="final-score">0</span></div>
+                        <div class="stat-row">Temps total : <span id="final-time">0:00</span></div>
+                        <div class="stat-row">Pièces récoltées : <span id="final-coins">0</span></div>
+                        <div class="stat-row">Boss vaincus : <span id="final-bosses">0</span></div>
+                    </div>
+                    <button class="btn-primary" id="btn-restart-victory">Rejouer</button>
+                </div>
+            </div>
+
+            <!-- Écran niveau terminé -->
+            <div id="overlay-level-complete" class="overlay hidden">
+                <div class="overlay-content">
+                    <h1 class="game-title level-title">Niveau terminé !</h1>
+                    <p class="game-subtitle" id="level-complete-text">Préparez-vous pour la suite...</p>
+                    <button class="btn-primary" id="btn-next-level">Continuer</button>
+                </div>
+            </div>
+
+            <!-- Barre de vie des boss -->
+            <div id="boss-health-bar" class="hidden">
+                <div class="boss-name" id="boss-name">Boss</div>
+                <div class="boss-bar-container">
+                    <div class="boss-bar-fill" id="boss-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>

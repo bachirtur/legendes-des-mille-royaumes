@@ -1,0 +1,476 @@
+/* =========================================================
+   LÉGENDES DES MILLE ROYAUMES — Feuille de style
+   Ambiance orientale fantastique : or, bleu nuit, turquoise,
+   rouge, violet, sable.
+   ========================================================= */
+
+/* ---------- Reset & base ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0a0612;
+    font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, sans-serif;
+    color: #fff5d6;
+}
+
+/* ---------- Conteneur principal ---------- */
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 50% 30%, #2d1b69 0%, #1a1a3e 45%, #0a0612 100%);
+    overflow: hidden;
+}
+
+/* Étoiles d'arrière-plan décoratives */
+#game-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, #ffd700 50%, transparent),
+        radial-gradient(1px 1px at 80% 20%, #fff5d6 50%, transparent),
+        radial-gradient(1px 1px at 40% 70%, #ffd700 50%, transparent),
+        radial-gradient(1px 1px at 65% 85%, #fff5d6 50%, transparent),
+        radial-gradient(2px 2px at 15% 60%, #fff5d6 50%, transparent),
+        radial-gradient(1px 1px at 90% 50%, #ffd700 50%, transparent);
+    background-size: 200% 200%;
+    opacity: 0.35;
+    pointer-events: none;
+    animation: twinkle 6s linear infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.35; }
+    50%      { opacity: 0.6; }
+}
+
+/* ---------- Canvas ---------- */
+#canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-canvas {
+    display: block;
+    background: #1a1a3e;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    box-shadow:
+        0 0 0 2px rgba(255, 215, 0, 0.35),
+        0 0 40px rgba(255, 215, 0, 0.18),
+        0 0 80px rgba(72, 0, 120, 0.5);
+    border-radius: 6px;
+    /* Sera redimensionné en JS pour préserver le ratio 16:9 */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 14px;
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hud-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.hud-row.hud-bottom {
+    justify-content: flex-start;
+}
+
+.hud-block, .hud-keys {
+    background: linear-gradient(180deg, rgba(45, 27, 105, 0.85), rgba(26, 26, 62, 0.85));
+    border: 1px solid rgba(255, 215, 0, 0.45);
+    border-radius: 10px;
+    padding: 5px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff5d6;
+    text-shadow: 0 1px 2px #000;
+    backdrop-filter: blur(2px);
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.hud-block span, .hud-keys span {
+    color: #ffd700;
+    margin-left: 2px;
+}
+
+#hud-energy span { color: #ff6b6b; }
+#hud-timer span  { color: #40e0d0; }
+#hud-boss span   { color: #c084fc; }
+#hud-keys span   { color: #ffd700; }
+
+/* ---------- Contrôles tactiles ---------- */
+#touch-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 18px 22px;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.touch-pad, .touch-actions {
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.touch-actions {
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.touch-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.4), rgba(45, 27, 105, 0.7));
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    color: #ffd700;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s, background 0.1s;
+}
+
+.touch-btn:active, .touch-btn.pressed {
+    transform: scale(0.92);
+    background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.8), rgba(72, 0, 120, 0.9));
+}
+
+.action-jump {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle at 30% 30%, rgba(64, 224, 208, 0.5), rgba(26, 26, 62, 0.8));
+    border-color: rgba(64, 224, 208, 0.7);
+    color: #40e0d0;
+}
+
+.action-attack {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle at 30% 30%, rgba(220, 20, 60, 0.5), rgba(26, 26, 62, 0.8));
+    border-color: rgba(220, 20, 60, 0.7);
+    color: #ff6b6b;
+}
+
+/* Affichage mobile / tablette */
+@media (max-width: 900px), (pointer: coarse) {
+    #touch-controls { display: flex; }
+    .hud-block, .hud-keys {
+        font-size: 12px;
+        padding: 4px 8px;
+        min-width: 48px;
+    }
+}
+
+@media (max-width: 500px) {
+    .hud-block, .hud-keys {
+        font-size: 10px;
+        padding: 3px 6px;
+        min-width: 42px;
+    }
+    .touch-btn { width: 48px; height: 48px; font-size: 20px; }
+    .action-jump, .action-attack { width: 58px; height: 58px; }
+}
+
+/* ---------- Overlays (écrans) ---------- */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center, rgba(45, 27, 105, 0.92) 0%, rgba(10, 6, 18, 0.98) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.4s ease;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 30px 40px;
+    max-width: 600px;
+    background: linear-gradient(180deg, rgba(45, 27, 105, 0.6), rgba(26, 26, 62, 0.6));
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    border-radius: 18px;
+    box-shadow:
+        0 0 30px rgba(255, 215, 0, 0.25),
+        inset 0 0 30px rgba(72, 0, 120, 0.4);
+}
+
+.game-title {
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow:
+        0 0 10px rgba(255, 215, 0, 0.7),
+        0 0 25px rgba(255, 165, 0, 0.5),
+        0 4px 8px #000;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    margin-bottom: 10px;
+}
+
+.title-accent {
+    display: block;
+    color: #40e0d0;
+    text-shadow:
+        0 0 10px rgba(64, 224, 208, 0.8),
+        0 0 25px rgba(64, 224, 208, 0.4);
+}
+
+.gameover-title {
+    color: #ff4444;
+    text-shadow:
+        0 0 10px rgba(255, 68, 68, 0.7),
+        0 0 25px rgba(220, 20, 60, 0.5);
+}
+
+.victory-title {
+    color: #ffd700;
+    text-shadow:
+        0 0 15px rgba(255, 215, 0, 0.9),
+        0 0 35px rgba(255, 165, 0, 0.6);
+    animation: pulse 1.6s ease-in-out infinite;
+}
+
+.level-title {
+    color: #40e0d0;
+    text-shadow:
+        0 0 12px rgba(64, 224, 208, 0.8),
+        0 0 25px rgba(64, 224, 208, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+}
+
+.game-subtitle {
+    font-size: clamp(13px, 2.4vw, 18px);
+    color: #fff5d6;
+    margin-bottom: 24px;
+    opacity: 0.9;
+}
+
+.game-subtitle strong {
+    color: #ffd700;
+}
+
+/* ---------- Aide contrôles ---------- */
+.controls-help {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin: 18px 0 26px;
+    font-size: 13px;
+    color: #fff5d6;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+kbd {
+    display: inline-block;
+    padding: 3px 8px;
+    background: linear-gradient(180deg, #3a2a7a, #2d1b69);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    border-radius: 6px;
+    color: #ffd700;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+    min-width: 26px;
+    text-align: center;
+}
+
+/* ---------- Boutons ---------- */
+.btn-primary {
+    background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
+    color: #2d1b69;
+    border: none;
+    padding: 12px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow:
+        0 4px 0 #b8860b,
+        0 6px 14px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 0 #b8860b,
+        0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+.btn-primary:active {
+    transform: translateY(2px);
+    box-shadow:
+        0 2px 0 #b8860b,
+        0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hint {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #fff5d6;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* ---------- Stats victoire ---------- */
+.victory-stats {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin: 18px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.stat-row {
+    padding: 6px 0;
+    color: #fff5d6;
+    border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-row span {
+    float: right;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* ---------- Barre de vie du boss ---------- */
+#boss-health-bar {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 500px;
+    z-index: 7;
+    text-align: center;
+    pointer-events: none;
+    animation: fadeIn 0.4s ease;
+}
+
+#boss-health-bar.hidden {
+    display: none;
+}
+
+.boss-name {
+    color: #ff6b6b;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(220, 20, 60, 0.8), 0 2px 4px #000;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.boss-bar-container {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(220, 20, 60, 0.7);
+    border-radius: 10px;
+    height: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(220, 20, 60, 0.5);
+}
+
+.boss-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #dc143c 0%, #ff6b6b 50%, #ffd700 100%);
+    transition: width 0.2s ease;
+    box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- Animations supplémentaires ---------- */
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(-4px, 2px); }
+    50%      { transform: translate(3px, -2px); }
+    75%      { transform: translate(-2px, 3px); }
+}
+
+.shake {
+    animation: shake 0.3s;
+}
+
+/* Mode plein écran : cacher la barre de défilement */
+body { -ms-overflow-style: none; scrollbar-width: none; }
+body::-webkit-scrollbar { display: none; }
